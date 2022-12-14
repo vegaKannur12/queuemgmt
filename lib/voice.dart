@@ -1,0 +1,221 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
+class VoiceTest extends StatefulWidget {
+  const VoiceTest({Key? key}) : super(key: key);
+
+  @override
+  State<VoiceTest> createState() => _VoiceTestState();
+}
+
+class _VoiceTestState extends State<VoiceTest> {
+  TextEditingController controller = TextEditingController();
+  FlutterTts flutterTts = FlutterTts();
+  double volume = 1.0;
+  double pitch = 1.0;
+  double speechrate = 0.5;
+  List<String> languages = [];
+  String  langCode = "en-US";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    languages = List<String>.from(await flutterTts.getLanguages);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text("Text To Speech"),
+        ),
+        body: Container(
+          margin: const EdgeInsets.only(top: 20),
+          child: Center(
+            child: Column(children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 200,
+                    height: 60,
+                    child: TextField(
+                      controller: controller,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter Text',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  ElevatedButton(
+                    child: const Text("Speak"),
+                    onPressed: _speak,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  ElevatedButton(
+                    child: const Text("Stop"),
+                    onPressed: _stop,
+                  ),
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 10),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 80,
+                      child: Text(
+                        "Volume",
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    ),
+                    Slider(
+                      min: 0.0,
+                      max: 1.0,
+                      value: volume,
+                      onChanged: (value) {
+                        setState(() {
+                          volume = value;
+                        });
+                      },
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      child: Text(
+                          double.parse((volume).toStringAsFixed(2)).toString(),
+                          style: const TextStyle(fontSize: 17)),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 10),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 80,
+                      child: Text(
+                        "Pitch",
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    ),
+                    Slider(
+                      min: 0.5,
+                      max: 2.0,
+                      value: pitch,
+                      onChanged: (value) {
+                        setState(() {
+                          pitch = value;
+                        });
+                      },
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      child: Text(
+                          double.parse((pitch).toStringAsFixed(2)).toString(),
+                          style: const TextStyle(fontSize: 17)),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 10),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 80,
+                      child: Text(
+                        "Speech Rate",
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    ),
+                    Slider(
+                      min: 0.0,
+                      max: 1.0,
+                      value: speechrate,
+                      onChanged: (value) {
+                        setState(() {
+                          speechrate = value;
+                        });
+                      },
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      child: Text(
+                          double.parse((speechrate).toStringAsFixed(2))
+                              .toString(),
+                          style: const TextStyle(fontSize: 17)),
+                    )
+                  ],
+                ),
+              ),
+              if (languages != null)
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    children: [
+                      const Text(
+                        "Language :",
+                        style: TextStyle(fontSize: 17),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton<String>(
+                        focusColor: Colors.white,
+                        value: langCode,
+                        style: const TextStyle(color: Colors.white),
+                        iconEnabledColor: Colors.black,
+                        items: languages
+                            .map<DropdownMenuItem<String>>((String? value) {
+                          return DropdownMenuItem<String>(
+                            value: value!,
+                            child: Text(
+                              value,
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? value) {
+                          setState(() {
+                            langCode = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                )
+            ]),
+          ),
+        ));
+  }
+
+  void initSetting() async {
+    await flutterTts.setVolume(volume);
+    await flutterTts.setPitch(pitch);
+    await flutterTts.setSpeechRate(speechrate);
+    await flutterTts.setLanguage(langCode);
+    // flutterTts.getVoices();
+  }
+
+  void _speak() async {
+    initSetting();
+    await flutterTts.speak(controller.text);
+    // flutterTts.setVoice("en-us-x-sfg#male_1-local")
+  }
+
+  void _stop() async {
+    await flutterTts.stop();
+  }
+}
