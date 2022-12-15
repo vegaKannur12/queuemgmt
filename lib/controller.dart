@@ -30,14 +30,13 @@ class Controller with ChangeNotifier {
     NetConnection.networkConnection(context).then((value) async {
       if (value == true) {
         try {
-          Uri url =
-              Uri.parse("http://trafiqerp.in/demo/clinic/API/initialize.php");
+          Uri url = Uri.parse("http://146.190.8.166/API/initialize.php");
 
           // isDownloaded = true;
           isLoading = true;
           notifyListeners();
 
-          Map body = {'branch_id': "1"};
+          Map body = {'branch_id': "4"};
           print("body----$body");
           http.Response response = await http.post(url, body: body);
           var map = jsonDecode(response.body);
@@ -78,15 +77,14 @@ class Controller with ChangeNotifier {
     NetConnection.networkConnection(context).then((value) async {
       if (value == true) {
         try {
-          Uri url =
-              Uri.parse("http://trafiqerp.in/demo/clinic/API/queue_list.php");
+          Uri url = Uri.parse("http://146.190.8.166/API/queue_list.php");
 
           if (i == 0) {
             isListLoading = true;
             notifyListeners();
           }
 
-          Map body = {'branch_id': "1"};
+          Map body = {'branch_id': "4"};
           print("body----$body");
           http.Response response = await http.post(url, body: body);
           var map = jsonDecode(response.body);
@@ -125,8 +123,7 @@ class Controller with ChangeNotifier {
     NetConnection.networkConnection(context).then((value) async {
       if (value == true) {
         try {
-          Uri url =
-              Uri.parse("http://trafiqerp.in/demo/clinic/API/update_list.php");
+          Uri url = Uri.parse("http://146.190.8.166/API/update_list.php");
 
           // if (i == 0) {
           //   isListLoading = true;
@@ -185,33 +182,14 @@ class Controller with ChangeNotifier {
 
   setColor(int index, bool value) {
     selectedTile[index] = value;
+
+    print("selectdhh-----${selectedTile[index]}");
     notifyListeners();
   }
 
-  void initSetting() async {
-    await flutterTts.setVolume(volume);
-    await flutterTts.setPitch(pitch);
-    await flutterTts.setSpeechRate(speechrate);
-    await flutterTts.setLanguage(langCode!);
-    // flutterTts.getVoices();
-  }
+  setSelectdeTile() {
+    selectedTile = List.generate(queuetList.length, (index) => false);
 
-  void _speak(
-      String text, String start, int i, BuildContext context, List list) async {
-    initSetting();
-    print("text-----$text");
-    if (start != "init") {
-      // Provider.of<Controller>(context, listen: false).setColor(i, true);
-
-      // print(
-      //     "jgjszhdj----${Provider.of<Controller>(context, listen: false).selectedTile}");
-    }
-    // for (int j = 0; j < list.length; j++) {
-    await flutterTts.speak(text);
-    // }
-    // flutterTts.cancelHandler!();
-    // Provider.of<Controller>(context, listen: false).setColor(i, false);
-
-    // flutterTts.setVoice("en-us-x-sfg#male_1-local")
+    notifyListeners();
   }
 }

@@ -351,10 +351,7 @@ class _HospitalScreenState extends State<HospitalScreen> {
 
   void _speak(String text, String start, int i) async {
     initSetting();
-    // setState(() {});
-    // if (text != null) {
-    //   await flutterTts.awaitSpeakCompletion(true);
-    // }
+
     if (start != "init") {
       Provider.of<Controller>(context, listen: false).setColor(i, true);
 
@@ -363,15 +360,6 @@ class _HospitalScreenState extends State<HospitalScreen> {
     }
 
     await flutterTts.speak(text);
-    // if (start != "init") {
-    //   Provider.of<Controller>(context, listen: false).setColor(i, false);
-
-    //   print(
-    //       "jgjszhdj----${Provider.of<Controller>(context, listen: false).selectedTile}");
-    // }
-    // Provider.of<Controller>(context, listen: false).setColor(i, false);
-
-    // flutterTts.setVoice("en-us-x-sfg#male_1-local")
   }
 
   //////////////////////////////////////////
@@ -400,9 +388,15 @@ class _HospitalScreenState extends State<HospitalScreen> {
 
           updateList.add(Provider.of<Controller>(context, listen: false)
               .queuetList[i]["queue_id"]);
+          // Future.delayed(const Duration(milliseconds: 500), () {
+          //   Provider.of<Controller>(context, listen: false)
+          //       .getQueueList(context, i);
+          // });
 
-          // setState(() {
+          // Provider.of<Controller>(context, listen: false).setColor(i, false);
+
           i = i + 1;
+
           // });
         } else {
           str = updateList.join(",");
